@@ -11,6 +11,16 @@ editor: source
 **Part 1:** Locate and examine the `robots.txt` file for this website. Summarize
 what you learn from it.
 
+<https://www.cheese.com/robots.txt>
+User-agent: *
+Sitemap: https://www.cheese.com/sitemap.xml
+
+User-agent: *: anyone is allowed to scrape
+No Crawl-delay: no wait time is required between each page scraped
+No Visit-time entry: no restrictions on time that scraping is allowed
+No Request-rate entry: no restrictions on simultaneous requests
+No mention of Disallow sections
+
 **Part 2:** Learn about the `html_attr()` function from `rvest`. Describe how
 this function works with a small example.
 
