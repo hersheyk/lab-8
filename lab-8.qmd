@@ -81,7 +81,7 @@ cheese_data <- webpage %>%
   html_attr("href") %>%
   paste0("https://cheese.com", .)
   #the outcome of this is "https://cheese.com" which is not what we would want: so the paste0 function is useless
-  # the general structure is useful though, and when you separate the flow into two it seems to work
+  # the general structure is useful though, and when you separate the flow and edit it to remove.cheese-item it seems to work
 
 
 cheese_names <- webpage %>%
