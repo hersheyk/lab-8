@@ -14,6 +14,25 @@ what you learn from it.
 **Part 2:** Learn about the `html_attr()` function from `rvest`. Describe how
 this function works with a small example.
 
+It gets the an attribute of a single html element. You can pull various details of an element, such as the reference link, the class, the name, the css styling etc. Below I have initialized a basic html. We  stated that the reference link for the first element is a.com and that the class is 'vital'. For the second we do the same but with href being alisa.com and the class being '541'. For the last we can see when the attribute is outside of the <a></a> it is not recognized as an attribute. Thus the class, "active" is not pulled, but the href, harshini.com is pulled.
+
+```{r}
+library(rvest)
+
+# below we initialize a basic html
+html <- minimal_html('<ul>
+  <li><a href="https://cheese.com" class="vital">a</a></li>
+  <li><a href="https://alisa.com" class="541" >b</a></li>
+  <li>class="active"<a href="https://harshini.com">b</a></li>
+  </ul>')
+
+# here we run the function to pull the attributes we wrote
+html %>% html_elements("a") %>% html_attrs()
+
+
+```
+
+
 **Part 3:** (Do this alongside Part 4 below.) I 
 used [ChatGPT](https://chat.openai.com/chat) to start the process of scraping
 cheese information with the following prompt:
