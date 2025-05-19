@@ -8,7 +8,13 @@ editor: source
 > of characteristics about different cheeses, and gain deeper insight into your
 > coding process. 🪤
 
-**Part 1:** Locate and examine the `robots.txt` file for this website. Summarize
+```{r}
+
+library(rvest)
+```
+
+
+## **Part 1:** Locate and examine the `robots.txt` file for this website. Summarize
 what you learn from it.
 
 <https://www.cheese.com/robots.txt>
@@ -21,13 +27,12 @@ No Visit-time entry: no restrictions on time that scraping is allowed
 No Request-rate entry: no restrictions on simultaneous requests
 No mention of Disallow sections
 
-**Part 2:** Learn about the `html_attr()` function from `rvest`. Describe how
+## **Part 2:** Learn about the `html_attr()` function from `rvest`. Describe how
 this function works with a small example.
 
 It gets the an attribute of a single html element. You can pull various details of an element, such as the reference link, the class, the name, the css styling etc. Below I have initialized a basic html. We  stated that the reference link for the first element is a.com and that the class is 'vital'. For the second we do the same but with href being alisa.com and the class being '541'. For the last we can see when the attribute is outside of the <a></a> it is not recognized as an attribute. Thus the class, "active" is not pulled, but the href, harshini.com is pulled.
 
 ```{r}
-library(rvest)
 
 # below we initialize a basic html
 html <- minimal_html('<ul>
@@ -43,7 +48,7 @@ html %>% html_elements("a") %>% html_attrs()
 ```
 
 
-**Part 3:** (Do this alongside Part 4 below.) I 
+## **Part 3:** (Do this alongside Part 4 below.) I 
 used [ChatGPT](https://chat.openai.com/chat) to start the process of scraping
 cheese information with the following prompt:
 
@@ -57,35 +62,46 @@ make about where ChatGPT is useful / not useful.
 #| eval: false
 #| label: small-example-of-getting-cheese-info
 
-# Load required libraries
-library(rvest)
+# Load required libraries: already have a libraries code chunk, and reloading the libraries every time, feels inefficient, but not incredibly so. 
+library(rvest) 
 library(dplyr)
 
-# Define the URL
+
+# Define the URL: this seems to be correct and defining this individually makes it easier should we need to change the url or use it somewhere else
 url <- "https://www.cheese.com/alphabetical"
 
-# Read the HTML content from the webpage
+# Read the HTML content from the webpage: 
 webpage <- read_html(url)
 
 # Extract the cheese names and URLs
 cheese_data <- webpage %>%
   html_nodes(".cheese-item") %>%
+  # cheese-item is non-existent, this should be h3 a, as when we ran that we had legitimate output
   html_nodes("a") %>%
   html_attr("href") %>%
   paste0("https://cheese.com", .)
+  #the outcome of this is "https://cheese.com" which is not what we would want: so the paste0 function is useless
+  # the general structure is useful though, and when you separate the flow into two it seems to work
+
 
 cheese_names <- webpage %>%
   html_nodes(".cheese-item h3") %>%
+  # again .cheese-item is non-existent so we would want to remove that, but then it runs fine
   html_text()
 
+
+# this works well, when the above is fixed
 # Create a data frame to store the results
 cheese_df <- data.frame(Name = cheese_names,
                         URL = cheese_data,
                         stringsAsFactors = FALSE)
 
+
 # Print the data frame
 print(cheese_df)
 ```
+
+
 
 **Part 4:** Obtain the following information for **all** cheeses in the
 database:
