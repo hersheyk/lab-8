@@ -2,6 +2,7 @@
 title: "Lab 8"
 subtitle: "Cheese Gromit!"
 editor: source
+embed-resources: true
 ---
 
 > **Goal:** Scrape information from <https://www.cheese.com> to obtain a dataset
