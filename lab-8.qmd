@@ -196,59 +196,70 @@ obtain the following detailed information:
 between page queries.)
 
 ```{r}
+#Extract a certain amount of cheese links per page
+extract_links <- function(main_url, n = 10) {
+  # 1 second pause between page queries
+  Sys.sleep(1)
+  
+  #Read the page
+  page <- read_html(main_url)
+  
+  #Get the first n urls for cheeses
+  cheese_href <- page |>
+    html_nodes("h3 a") |> 
+    head(n) |>
+    html_attr("href")
+  
+  #get cheese url
+  paste0("https://cheese.com", cheese_href)
+}
 
+#Helper function to extract the specific cheese information
 extract_field <- function(field_name, cheese_text) {
   # Search for lines starting with field
   field <- cheese_text[str_detect(cheese_text, paste0("^", field_name))]
   
   if (length(field) == 0) return(NA)
   
-  str_remove(field, field_name)
+  trimws(str_remove(field, field_name))
 }
 
 
-cheese_scrape <- function(url) {
-    # 1 second pause between page queries
-    Sys.sleep(1)
+#Scrape each individual cheese page
+cheese_scrape <- function(cheese_url) {
+ #1 second pause between page queries
+  Sys.sleep(1)
+  
+  #Read the page
+  page <- read_html(cheese_url)
     
-    # Read the page
-    page <- read_html(url)
+  # Get the cheese stuff
+  cheese_info_items <- page |> 
+    html_elements("li p") |> 
+    html_text()
     
-    # Get the cheese stuff
-    cheese_info_items <- page |> 
-      html_elements("li p") |> 
-      html_text()
-    
-    tibble(
-      milk = extract_field("Made from", cheese_info_items),
-      country = extract_field("Country of origin:", cheese_info_items),
-      family = extract_field("Family:", cheese_info_items),
-      type = extract_field("Type:", cheese_info_items),
-      flavour = extract_field("Flavour:", cheese_info_items)
+  tibble(
+    milk = extract_field("Made from", cheese_info_items),
+    country = extract_field("Country of origin:", cheese_info_items),
+    family = extract_field("Family:", cheese_info_items),
+    type = extract_field("Type:", cheese_info_items),
+    flavour = extract_field("Flavour:", cheese_info_items)
   )
 }
   
 ```
 
 ```{r}
-base_url <- "https://www.cheese.com/alphabetical/?"
+cheese_urls <- extract_links("https://www.cheese.com/alphabetical/")
 
-urls_all_pages <- c(base_url, 
-                    str_c(base_url, 
-                          "&page=", 
-                          1:1)
-                    )
+pages2 <- map(cheese_urls, cheese_scrape)
 
-urls_from_cheeses <- head(df_cheeses$url, 5)
-
-pages2 <- purrr::map(urls_from_cheeses, cheese_scrape)
-
-df_articles2 <- bind_rows(pages2)
-
-head(df_articles2)
+df_cheeses2 <- bind_rows(pages2)
 ```
 
-
+```{r}
+df_cheeses2
+```
 
 **Part 6:** Evaluate the code that you wrote in terms of **efficiency**. To
 what extent do your function(s) adhere to the **principles for writing good functions**?
